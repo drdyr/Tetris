@@ -16,6 +16,7 @@ shapes = []
 
 exampleShape = I(2, 3)
 shapes.append(exampleShape)
+
 while True:
     for event in py.event.get():
         if event.type == py.QUIT:
