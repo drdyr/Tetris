@@ -8,7 +8,6 @@ class Block:
         self.x = x
         self.y = y
         self.colour = colour
-        self.stopped = False
 
     def draw(self, screen):
         rect = py.Rect(self.x * 40 + 1, self.y * 40 + 1, 38, 38)
