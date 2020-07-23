@@ -7,9 +7,7 @@ import random
 
 py.init()
 
-occupied_cells = [
-
-]
+occupied_cells = []
 
 
 clock = py.time.Clock()
@@ -30,7 +28,7 @@ shapes = {
     'Z': {'colour': red, 'block_positions': [(1, 0), (0, 0), (0, -1), (-1, -1)], 'pivots': [1, 2]},
 }
 
-shape_types = ['I', 'O', 'T', 'J', 'L', 'S', 'Z']
+shape_types = ['I', 'O', 'T', 'J', 'L','S','Z']
 
 class Block:
     def __init__(self, x, y, colour):
@@ -171,15 +169,13 @@ stoppedBlocks = []
 def create_new():
     global currentShape
     if currentShape.stopped:
-
-        print("Shape stopped----------------------------")
-        print(len(stoppedBlocks))
-        print(len(occupied_cells))
-
         rand_shape = random.choice(shape_types)
         currentShape = Shape(5, 0, rand_shape)
 
-
+def print_stuff():
+    print(occupied_cells, stoppedBlocks)
+    for block in stoppedBlocks:
+        print((block.x, block.y))
 
 def line_check():
     global occupied_cells
@@ -194,26 +190,23 @@ def line_check():
                 rows_to_be_deleted.append(y)
 
     if len(rows_to_be_deleted) >= 1:
-        before_coordinates = []
-        for block in stoppedBlocks:
-            before_coordinates.append((block.x, block.y))
-        print("Just before deletion----------------------------------------")
-        print(before_coordinates)
-        print(occupied_cells)
-        print(len(before_coordinates))
-        print(len(occupied_cells))
-        print(rows_to_be_deleted)
 
-        for block in stoppedBlocks:
-            if block.y in rows_to_be_deleted:
-                stoppedBlocks.remove(block)
-                occupied_cells.remove((block.x, block.y))
+        index = 0
+
+        while index < len(stoppedBlocks):
+            if stoppedBlocks[index].y in rows_to_be_deleted:
+                stoppedBlocks.pop(index)
                 continue
+            index += 1
 
+        occupied_cells = []
+        for block in stoppedBlocks:
+            if block.y < min(rows_to_be_deleted):
+                block.y += len(rows_to_be_deleted)
+            occupied_cells.append((block.x, block.y))
 
-        print("After deletion---------")
-        print("occupied cells", occupied_cells)
-        print("no occupied cells", len(occupied_cells))
+        print(occupied_cells)
+
 frames = 0
 py.time.delay(500)
 
@@ -236,6 +229,8 @@ while True:
                 currentShape.right = True
             if event.key == py.K_SPACE:
                 currentShape.insta_move = True
+            if event.key == py.K_UP:
+                print_stuff()
         if event.type == py.KEYUP:
             if event.key == py.K_a:
                 currentShape.left = False
@@ -251,10 +246,8 @@ while True:
     create_new()
     line_check()
 
-
     for block in stoppedBlocks:
         block.draw(screen)
-
 
     py.display.flip()
     frames += 1
