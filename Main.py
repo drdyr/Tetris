@@ -1,6 +1,5 @@
 import pygame as py
 import sys
-from Block import *
 from Colours import *
 from Grid import *
 import random
